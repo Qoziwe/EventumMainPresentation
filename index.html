@@ -1,0 +1,921 @@
+<!-- [file name]: Maindark2ver_final.html -->
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EVENTUM - Investor Pitch Deck</title>
+
+    <!-- React & ReactDOM -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              dark: {
+                bg: "#050505",
+                card: "#1C1C1E",
+                border: "rgba(255, 255, 255, 0.1)",
+              },
+              brand: {
+                indigo: "#4F46E5", // Eventum Brand Color
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background-color: #050505;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        color: #ffffff;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      .bg-gradient-dark {
+        background: radial-gradient(
+          circle at 50% 50%,
+          #1a1a1a 0%,
+          #000000 100%
+        );
+      }
+
+      /* Glass/Dark Card Style */
+      .dark-card {
+        background-color: #1c1c1e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .dark-card:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+
+      .stat-glow {
+        box-shadow: 0 0 40px rgba(79, 70, 229, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+      const { motion, AnimatePresence } = window.Motion;
+
+      // --- ICONS ---
+      const IconCheck = () => (
+        <svg
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      );
+      const IconTarget = () => (
+        <svg width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm0-160a72,72,0,1,0,72,72A72.08,72.08,0,0,0,128,56Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,128,184Zm0-96a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152Z"></path>
+        </svg>
+      );
+      const IconUsers = () => (
+        <svg width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.33-84.87,8,8,0,1,1-5.9-14.85,60,60,0,1,1,27.48,115.63,96,96,0,0,1,70.56,42.13A8,8,0,0,1,250.14,206.7Z"></path>
+        </svg>
+      );
+      const IconChart = () => (
+        <svg width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M224,200H48V40a8,8,0,0,0-16,0V208a8,8,0,0,0,8,8H224a8,8,0,0,0,0-16ZM93.66,90.34a8,8,0,0,1,0-11.32l48-48a8,8,0,0,1,11.32,0l48,48a8,8,0,0,1-11.32,11.32L152,59.31V168a8,8,0,0,1-16,0V59.31l-34.34,34.35A8,8,0,0,1,93.66,90.34Z"></path>
+        </svg>
+      );
+      const IconMoney = () => (
+        <svg width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-36a28,28,0,0,0,20-47.32V108a20,20,0,0,0-20-20H112a8,8,0,0,0,0,16h32a4,4,0,0,1,4,4v20H116a28,28,0,0,0,0,56h12a8,8,0,0,0,0-16H116a12,12,0,0,1,0-24h36a8,8,0,0,0,0-16H124V108h20a36,36,0,0,1,0,72Z"></path>
+        </svg>
+      );
+
+      // --- COMPONENTS ---
+
+      // Reusable Card Component
+      const Card = ({
+        title,
+        text,
+        bigText,
+        children,
+        className = "",
+        delay = 0,
+      }) => (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: delay, duration: 0.5 }}
+          className={`dark-card rounded-2xl p-8 flex flex-col justify-start h-full group transition-all duration-300 ${className}`}
+        >
+          {children}
+          {bigText && (
+            <div className="text-4xl md:text-5xl font-black text-white mb-2">
+              {bigText}
+            </div>
+          )}
+          {title && (
+            <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
+          )}
+          {text && (
+            <p className="text-gray-400 text-sm leading-relaxed">{text}</p>
+          )}
+        </motion.div>
+      );
+
+      // Slide 1: Intro
+      const Slide1 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <span className="px-3 py-1 border border-white/20 rounded-full text-xs font-bold tracking-widest text-gray-400 uppercase">
+                Pitch Deck
+              </span>
+            </div>
+            <h2 className="text-sm font-bold tracking-[0.3em] text-brand-indigo mb-4 uppercase">
+              Центральная идея проекта
+            </h2>
+            <h1 className="text-7xl md:text-9xl font-black text-white tracking-tighter mb-8">
+              EVENTUM
+            </h1>
+            <div className="w-24 h-1 bg-white mb-8"></div>
+            <p className="text-2xl text-gray-300 font-light max-w-3xl leading-relaxed">
+              «EVENTUM — умный справочник мест и событий.
+              <br />
+              Мы создаем единую точку входа в городскую жизнь Алматы и, далее,
+              всей Республики Казахстан.»
+            </p>
+          </motion.div>
+        </div>
+      );
+
+      // Slide 2: The Core
+      const Slide2 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              ОСНОВА И СУТЬ
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              ФИЛОСОФИЯ ПРОДУКТА
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-6">
+            {[
+              "Независимая, объективная подача информации — мы не реклама.",
+              "Полный охват: от крупных мероприятий до локальных и нишевых активностей.",
+              "Удобная и глубокая навигация: категории, фильтры, интересы.",
+            ].map((item, i) => (
+              <Card
+                key={i}
+                delay={0.2 + i * 0.1}
+                className="flex-row items-center gap-6 !p-6"
+              >
+                <div className="w-2 h-2 bg-brand-indigo rounded-full shadow-[0_0_10px_#4F46E5]"></div>
+                <span className="text-xl md:text-2xl font-light text-white">
+                  {item}
+                </span>
+              </Card>
+            ))}
+          </div>
+        </div>
+      );
+
+      // Slide 3: Alternative
+      const Slide3 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-10">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              АЛЬТЕРНАТИВНЫЙ ПОДХОД
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              ГИБКОСТЬ ПЛАТФОРМЫ
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-3 gap-6 h-64 mb-8">
+            {[
+              "Размещение любых событий.",
+              "Любых охватов.",
+              "Любого формата.",
+            ].map((text, i) => (
+              <Card
+                key={i}
+                delay={0.2 + i * 0.1}
+                className="justify-end relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-6 opacity-10">
+                  <div className="w-16 h-16 bg-white rounded-full blur-xl"></div>
+                </div>
+                <span className="text-2xl font-bold text-white relative z-10">
+                  {text}
+                </span>
+              </Card>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="border-t border-white/10 pt-6 flex justify-between"
+          >
+            <span className="text-gray-500 text-xs font-mono uppercase">
+              Ежедневные обновления
+            </span>
+            <span className="text-white text-sm">
+              Город — живой, и мы отражаем его развитие.
+            </span>
+          </motion.div>
+        </div>
+      );
+
+      // Slide 4: Problems & Solutions
+      const Slide4 = () => (
+        <div className="w-full h-full flex">
+          {/* Left: Pain Points (Dark) */}
+          <div className="w-1/2 h-full flex flex-col justify-center px-16 bg-[#0A0A0A] border-r border-white/10">
+            <motion.h2
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-8"
+            >
+              PROBLEMS
+            </motion.h2>
+            <ul className="space-y-8">
+              {[
+                "Информационный шум.",
+                "Бесконечный скроллинг.",
+                "Потеря времени.",
+              ].map((item, i) => (
+                <motion.li
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="text-3xl font-bold text-gray-600"
+                >
+                  • {item}
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Right: Solution (Indigo Accent) */}
+          <div className="w-1/2 h-full flex flex-col justify-center px-16 bg-[#111113] relative">
+            <div className="absolute inset-0 bg-brand-indigo opacity-10 pointer-events-none"></div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="relative z-10"
+            >
+              <h2 className="text-sm font-bold tracking-[0.2em] text-brand-indigo mb-8">
+                SOLUTION
+              </h2>
+              <h3 className="text-3xl font-bold text-white mb-6 leading-tight">
+                EVENTUM дает быстрый, структурированный доступ — без хаоса.
+              </h3>
+              <p className="text-gray-400 text-lg mb-8">
+                Мы заменяем беспорядочный поиск на точный, чистый и полезный
+                городской навигатор.
+              </p>
+              <div className="inline-block px-4 py-2 bg-white text-black font-bold rounded-lg text-sm">
+                Все события. Все форматы.
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      );
+
+      // Slide 5: Product Value
+      const Slide5 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              НАШ ПРОДУКТ
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              КЛЮЧЕВАЯ ЦЕННОСТЬ
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-3 gap-6 h-64">
+            {[
+              {
+                title: "Умный подбор",
+                text: "Событий под интересы пользователя.",
+              },
+              {
+                title: "Навигация",
+                text: "Максимальное упрощение и экономия времени.",
+              },
+              {
+                title: "Организаторы",
+                text: "Усиление позиций и точная связка с аудиторией.",
+              },
+            ].map((card, i) => (
+              <Card
+                key={i}
+                delay={0.2 + i * 0.1}
+                title={card.title}
+                text={card.text}
+              >
+                <div className="mb-4 p-3 bg-white/5 rounded-full w-fit text-brand-indigo">
+                  <IconCheck />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      );
+
+      // Slide 6: Target Audience
+      const Slide6 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-8 text-center">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              АУДИТОРИЯ
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              ПОРТРЕТЫ ПОТРЕБИТЕЛЕЙ
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-8 h-[450px]">
+            {/* Persona 1: Student/Youth */}
+            <Card
+              delay={0.2}
+              className="relative group hover:bg-[#222] transition-colors overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-6 opacity-20 text-brand-indigo">
+                <IconTarget />
+              </div>
+              <div className="flex flex-col h-full justify-between z-10">
+                <div>
+                  <div className="flex gap-2 mb-4">
+                    <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-mono text-brand-indigo uppercase tracking-wider">
+                      18–24 года
+                    </span>
+                    <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-mono text-gray-400 uppercase tracking-wider">
+                      Студент
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    «Искатель впечатлений»
+                  </h3>
+                  <div className="w-12 h-0.5 bg-brand-indigo mb-4"></div>
+                  <p className="text-gray-300 leading-relaxed mb-4 text-sm md:text-base">
+                    Живет в ритме города. Спонтанный выбор досуга, часто решает,
+                    куда пойти, за час до выхода. Бюджет ограничен, но частота
+                    посещений высокая.
+                    <br />
+                    <br />
+                    <span className="text-white font-semibold">Интересы:</span>
+                    <br />
+                    Тусовки, фестивали, хайповые места, бесплатные ивенты, бары.
+                  </p>
+                </div>
+                <div className="bg-brand-indigo/10 p-4 rounded-lg border border-brand-indigo/20">
+                  <p className="text-xs text-brand-indigo uppercase font-bold mb-1">
+                    Ключевая потребность
+                  </p>
+                  <p className="text-white text-sm font-medium">
+                    «Где сейчас движ? Куда сходить с друзьями недорого и весело
+                    прямо сейчас?»
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Persona 2: Professional/Adult */}
+            <Card
+              delay={0.4}
+              className="relative group hover:bg-white hover:text-black transition-colors duration-500 overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-10 group-hover:text-black text-white">
+                <IconUsers />
+              </div>
+              <div className="flex flex-col h-full justify-between z-10">
+                <div>
+                  <div className="flex gap-2 mb-4">
+                    <span className="px-3 py-1 bg-white group-hover:bg-black group-hover:text-white rounded-full text-xs font-mono text-black font-bold uppercase tracking-wider transition-colors">
+                      25–45 лет
+                    </span>
+                    <span className="px-3 py-1 bg-white/10 group-hover:bg-black/10 group-hover:text-gray-700 rounded-full text-xs font-mono text-gray-400 uppercase tracking-wider transition-colors">
+                      Профи
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white group-hover:text-black mb-4 transition-colors">
+                    «Городской гедонист»
+                  </h3>
+                  <div className="w-12 h-0.5 bg-gray-500 group-hover:bg-black mb-4 transition-colors"></div>
+                  <p className="text-gray-300 group-hover:text-gray-700 leading-relaxed mb-4 text-sm md:text-base transition-colors">
+                    Ценит свое время и комфорт. Планирует выходные заранее.
+                    Готов платить за качество, сервис и уникальный опыт.
+                    Избегает шумных и переполненных мест.
+                    <br />
+                    <br />
+                    <span className="text-white group-hover:text-black font-semibold transition-colors">
+                      Интересы:
+                    </span>
+                    <br />
+                    Гастрономия, театры, выставки, закрытые клубы, нетворкинг,
+                    спорт.
+                  </p>
+                </div>
+                <div className="bg-white/10 group-hover:bg-black/5 p-4 rounded-lg border border-white/20 group-hover:border-black/10 transition-colors">
+                  <p className="text-xs text-gray-400 group-hover:text-gray-600 uppercase font-bold mb-1 transition-colors">
+                    Ключевая потребность
+                  </p>
+                  <p className="text-white group-hover:text-black text-sm font-medium transition-colors">
+                    «Хочу качественно провести вечер. Нужен проверенный план без
+                    сюрпризов и сложного поиска.»
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      );
+
+      // Slide 7: Market Data
+      const Slide7 = () => (
+        <div className="w-full h-full flex flex-col justify-center items-center text-center px-12">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-6">
+              РЫНОК
+            </h2>
+            <h1 className="text-4xl font-bold text-white mb-8">
+              ПОЧЕМУ АЛМАТЫ?
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 100, delay: 0.2 }}
+            className="bg-[#1C1C1E] border border-white/10 rounded-3xl p-12 px-20 shadow-2xl mb-8 stat-glow"
+          >
+            <h1 className="text-9xl font-black text-white tracking-tighter mb-2">
+              46.1<span className="text-brand-indigo">%</span>
+            </h1>
+            <p className="text-gray-400 font-mono text-sm uppercase">
+              Активных покупателей билетов
+            </p>
+          </motion.div>
+
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-xl text-gray-300 max-w-2xl"
+          >
+            Город с самой высокой плотностью событий.
+            <br />
+            <span className="text-brand-indigo font-bold">
+              Идеальная точка старта перед масштабированием.
+            </span>
+          </motion.p>
+        </div>
+      );
+
+      // Slide 8 - Competitive Analysis
+      const Slide8 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              КОНКУРЕНТНЫЙ ЛАНДШАФТ
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              УНИКАЛЬНОЕ ПОЗИЦИОНИРОВАНИЕ
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-4 gap-4 h-64">
+            {[
+              {
+                name: "2GIS",
+                weakness: "Только места, нет событий",
+                color: "bg-red-500/10",
+              },
+              {
+                name: "Instagram",
+                weakness: "Хаос, нет структуры",
+                color: "bg-purple-500/10",
+              },
+              {
+                name: "Афиши",
+                weakness: "Только платные анонсы",
+                color: "bg-yellow-500/10",
+              },
+              {
+                name: "Google",
+                weakness: "Нет контекста и сообщества",
+                color: "bg-blue-500/10",
+              },
+            ].map((comp, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.1 }}
+                className={`${comp.color} border border-white/10 rounded-xl p-6 flex flex-col justify-between`}
+              >
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {comp.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm">{comp.weakness}</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs px-2 py-1 bg-white/10 rounded">
+                    Слабость
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-8 p-6 bg-brand-indigo/10 border border-brand-indigo/20 rounded-xl"
+          >
+            <h3 className="text-xl font-bold text-white mb-2">
+              Наше преимущество:
+            </h3>
+            <p className="text-gray-300">
+              EVENTUM объединяет полноту данных 2GIS, виральность Instagram,
+              структуру афиш и мощь поиска Google в единой платформе.
+            </p>
+          </motion.div>
+        </div>
+      );
+
+      // Slide 9 - Monetization (Renamed)
+      const Slide9 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <motion.div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-2">
+              МОНЕТИЗАЦИЯ
+            </h2>
+            <h1 className="text-4xl font-extrabold text-white">
+              ВОЗМОЖНЫЕ ПУТИ МОНЕТИЗАЦИИ
+            </h1>
+          </motion.div>
+
+          <div className="grid grid-cols-3 gap-6 mb-8">
+            {[
+              {
+                title: "Премиум-размещение",
+                revenue: "Поднятие в топ",
+                margin: "B2B",
+                stage: "Реклама",
+              },
+              {
+                title: "Партнерские билеты",
+                revenue: "Комиссия с продаж",
+                margin: "B2B2C",
+                stage: "Транзакции",
+              },
+              {
+                title: "Data Insights",
+                revenue: "Аналитика для бизнеса",
+                margin: "Data",
+                stage: "Данные",
+              },
+            ].map((model, i) => (
+              <Card
+                key={i}
+                delay={0.2 + i * 0.1}
+                title={model.title}
+                text={`Модель: ${model.margin}`}
+                className="relative overflow-hidden"
+              >
+                <div className="absolute top-4 right-4 text-xs px-2 py-1 bg-white/10 rounded">
+                  {model.stage}
+                </div>
+                <div className="mb-4 p-3 bg-white/5 rounded-full w-fit">
+                  <IconMoney />
+                </div>
+                <div className="text-xl font-bold text-white mt-4">
+                  {model.revenue}
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="text-center"
+          >
+            <p className="text-gray-400">
+              Гибкая система, позволяющая масштабировать выручку вместе с ростом
+              аудитории.
+            </p>
+          </motion.div>
+        </div>
+      );
+
+      // Slide 11 - Team & Roadmap (Modified Team)
+      const Slide11 = () => (
+        <div className="w-full h-full flex flex-col justify-center px-16 lg:px-24">
+          <div className="grid grid-cols-2 gap-12 h-full">
+            {/* Left: Team */}
+            <div className="flex flex-col justify-center">
+              <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-4">
+                КОМАНДА
+              </h2>
+              <h1 className="text-3xl font-extrabold text-white mb-8">
+                НАШИ ЛЮДИ
+              </h1>
+
+              <div className="grid grid-cols-1 gap-4">
+                {[
+                  "Камиль Кадыров",
+                  "Злавдинов Леким",
+                  "Максименок Мирон",
+                  "Тормашев Арсений",
+                  "Снесарев Даниил",
+                ].map((name, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.1 }}
+                    className="p-4 bg-[#1C1C1E] border border-white/10 rounded-xl flex items-center gap-4"
+                  >
+                    <div className="w-2 h-2 bg-brand-indigo rounded-full"></div>
+                    <div className="font-bold text-white text-lg">{name}</div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Roadmap */}
+            <div className="flex flex-col justify-center">
+              <h2 className="text-sm font-bold tracking-[0.2em] text-gray-500 mb-4">
+                ДОРОЖНАЯ КАРТА
+              </h2>
+              <h1 className="text-3xl font-extrabold text-white mb-8">
+                ПЛАН РАЗВИТИЯ
+              </h1>
+
+              <div className="space-y-4">
+                {[
+                  {
+                    q: "Q3 2024",
+                    task: "Запуск MVP в Алматы",
+                    status: "Текущий",
+                  },
+                  {
+                    q: "Q1 2025",
+                    task: "Масштабирование базы",
+                    status: "План",
+                  },
+                  { q: "Q3 2025", task: "Расширение функций", status: "План" },
+                  { q: "Q2 2026", task: "Выход в регионы", status: "Цель" },
+                ].map((step, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 + i * 0.1 }}
+                    className="p-4 border border-white/10 rounded-xl flex justify-between items-center"
+                  >
+                    <div>
+                      <div className="font-bold text-white">{step.q}</div>
+                      <div className="text-gray-300 text-sm">{step.task}</div>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        step.status === "Текущий"
+                          ? "bg-brand-indigo text-white"
+                          : step.status === "План"
+                          ? "bg-white/10 text-gray-300"
+                          : "bg-green-500/20 text-green-400"
+                      }`}
+                    >
+                      {step.status}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      // Slide 12: Final (Cleaned)
+      const Slide12 = () => (
+        <div className="w-full h-full flex flex-col justify-center items-center text-center px-16">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-[100px] font-black text-white tracking-tighter mb-6 leading-none">
+              EVENTUM
+            </h1>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-2xl text-gray-300 max-w-3xl leading-relaxed mb-10"
+          >
+            «Мы создаем экосистему, которая объединяет все события города,
+            делает культурную жизнь доступной. Охват не имеет значения — мы
+            включаем всех.»
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            className="mt-12"
+          >
+            <div className="w-24 h-1 bg-brand-indigo mx-auto rounded-full"></div>
+            <p className="text-gray-500 text-sm mt-4 font-mono">
+              Спасибо за внимание. Готовы ответить на вопросы.
+            </p>
+          </motion.div>
+        </div>
+      );
+
+      // --- MAIN APP LOGIC ---
+      const App = () => {
+        const [currentSlide, setCurrentSlide] = useState(0);
+        const slides = [
+          Slide1, // Intro (Start here now)
+          Slide2, // Core Philosophy
+          Slide3, // Alternative Approach
+          Slide4, // Problems & Solutions
+          Slide5, // Product Value
+          Slide6, // Target Audience
+          Slide7, // Market Data
+          Slide8, // Competitive Analysis
+          Slide9, // Monetization (Renamed)
+          Slide11, // Team (Updated) & Roadmap
+          Slide12, // Final (Cleaned)
+        ];
+
+        const nextSlide = () => {
+          if (currentSlide < slides.length - 1)
+            setCurrentSlide((curr) => curr + 1);
+        };
+
+        const prevSlide = () => {
+          if (currentSlide > 0) setCurrentSlide((curr) => curr - 1);
+        };
+
+        useEffect(() => {
+          const handleKeyDown = (e) => {
+            if (e.key === "ArrowRight") nextSlide();
+            if (e.key === "ArrowLeft") prevSlide();
+          };
+          window.addEventListener("keydown", handleKeyDown);
+          return () => window.removeEventListener("keydown", handleKeyDown);
+        }, [currentSlide]);
+
+        const CurrentSlideComponent = slides[currentSlide];
+
+        return (
+          <div className="w-screen h-screen flex items-center justify-center p-4 md:p-8 bg-gradient-dark">
+            {/* Main Container: 16/9 Aspect Ratio, Dark Theme, Rounded */}
+            <div className="relative w-full max-w-7xl aspect-[16/9] bg-[#0A0A0A] border border-white/10 rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+              {/* Header: Logo */}
+              <div className="absolute top-8 left-8 z-10 flex items-center gap-3">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <span className="text-black font-bold text-xs">E</span>
+                </div>
+                <span className="font-bold tracking-wide text-white">
+                  EVENTUM
+                </span>
+              </div>
+
+              {/* Content Area */}
+              <div className="flex-1 relative overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="absolute inset-0"
+                  >
+                    <CurrentSlideComponent />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Footer: Navigation Controls */}
+              <div className="absolute bottom-0 left-0 w-full p-8 flex justify-between items-end z-20 pointer-events-none">
+                {/* Dots */}
+                <div className="flex gap-2 mb-2 pointer-events-auto">
+                  {slides.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === currentSlide
+                          ? "w-8 bg-white"
+                          : "w-2 bg-gray-700"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Arrows */}
+                <div className="flex gap-4 pointer-events-auto">
+                  <button
+                    onClick={prevSlide}
+                    disabled={currentSlide === 0}
+                    className={`w-12 h-12 rounded-full border border-white/20 flex items-center justify-center transition-all hover:bg-white hover:text-black hover:border-white ${
+                      currentSlide === 0
+                        ? "opacity-30 cursor-not-allowed text-gray-500"
+                        : "bg-transparent text-white"
+                    }`}
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    disabled={currentSlide === slides.length - 1}
+                    className={`w-12 h-12 rounded-full border border-white/20 flex items-center justify-center transition-all hover:bg-white hover:text-black hover:border-white ${
+                      currentSlide === slides.length - 1
+                        ? "opacity-30 cursor-not-allowed text-gray-500"
+                        : "bg-white text-black border-white"
+                    }`}
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+
+              {/* Slide Counter */}
+              <div className="absolute top-8 right-8 text-gray-500 font-mono text-sm">
+                {currentSlide + 1 < 10
+                  ? `0${currentSlide + 1}`
+                  : currentSlide + 1}{" "}
+                / {slides.length}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
